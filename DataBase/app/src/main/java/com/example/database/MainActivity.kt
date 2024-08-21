@@ -132,10 +132,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
         btn_showAll.setOnClickListener {
+
+            searchView.queryHint  = "Search Among ${rs.count} Records"
+
             var adapter = SimpleCursorAdapter(applicationContext,R.layout.my_layout,rs,
             arrayOf("Sname","Sem"),
             intArrayOf(R.id.textname, R.id.textsem))
             listview.adapter = adapter
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    return false
+                }
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    rs = db.rawQuery("SELECT Sid _id, Sname, Sem FROM Student WHERE Sname LIKE '%${p0}%'",null)
+                    adapter.changeCursor((rs))
+                    return false
+                }
+            })
         }
     }
 
@@ -159,3 +173,4 @@ class MainActivity : AppCompatActivity() {
             }).show()
     }
 }
+
