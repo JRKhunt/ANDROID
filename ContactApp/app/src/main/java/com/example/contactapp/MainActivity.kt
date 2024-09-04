@@ -1,19 +1,24 @@
 package com.example.contactapp
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.widget.ListView
-import android.widget.SimpleCursorAdapter
-import android.widget.SearchView
+import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import android.view.ContextMenu
+import android.view.ContextMenu.ContextMenuInfo
+import android.view.MenuItem
+import android.view.View
+import android.widget.*
+import android.widget.AdapterView.AdapterContextMenuInfo
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         listView = findViewById(R.id.Listview)
         searchView = findViewById(R.id.searchView)
+        listView.setOnCreateContextMenuListener(this)
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_CONTACTS), 111)
@@ -129,5 +135,53 @@ class MainActivity : AppCompatActivity() {
             intent.data = Uri.parse("tel:$phoneNumber")
             startActivity(intent)
         }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.menu_contact_options, menu)
+    }
+
+    @SuppressLint("Range")
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val info = item.menuInfo as AdapterContextMenuInfo
+        cursor?.moveToPosition(info.position)
+        val phoneNumber = cursor?.getString(cursor!!.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+
+        return when (item.itemId) {
+            R.id.action_call -> {
+                phoneNumber?.let { makePhoneCall(it) }
+                true
+            }
+            R.id.action_message -> {
+                phoneNumber?.let { sendMessage(it) }
+                true
+            }
+            R.id.action_whatsapp -> {
+                phoneNumber?.let { openWhatsApp(it) }
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+    private fun sendMessage(phoneNumber: String) {
+        val smsIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("smsto:${phoneNumber}")
+        }
+        startActivity(smsIntent)
+        true
+    }
+
+    private fun openWhatsApp(phoneNumber: String) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            type = "vnd.android-dir/mms-sms"
+            data = Uri.parse("sms:$phoneNumber")
+        }
+        startActivity(intent)
     }
 }
