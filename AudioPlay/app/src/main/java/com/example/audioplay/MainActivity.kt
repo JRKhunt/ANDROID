@@ -24,14 +24,14 @@ class MainActivity : AppCompatActivity() {
         btn2 = findViewById(R.id.btnonline)
         btn3 = findViewById(R.id.btnonline1)
 
-//        btn.setOnClickListener{
-//            mp = MediaPlayer.create(this,R.raw.)
-//            mp.start()
-//        }
-//
-//        btn1.setOnClickListener {
-//            mp.stop()
-//        }
+        btn.setOnClickListener{
+            mp = MediaPlayer.create(this,R.raw.aajkiraat)
+            mp.start()
+        }
+
+        btn1.setOnClickListener {
+            mp.stop()
+        }
 
         btn2.setOnClickListener{
             mp = MediaPlayer()

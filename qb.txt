@@ -1,0 +1,37 @@
+unit 1
+
+variable
+parametar hase j final 
+null safety final
+array
+
+unit 2 
+
+history android
+full form 1 mark ma 
+manifest file 7
+lifecycle 5
+software stack
+layout any 2 
+intent
+
+unit 3 
+
+preference 
+database
+content provider
+file handling 
+
+unit 4
+
+option menu & context menu 
+method of canvas and paint 
+animation
+location forward reverce
+recycle view card view
+
+unit 5 
+
+audio
+video
+camera
